@@ -51,9 +51,9 @@ export default async function Home() {
           <div className="flex items-center gap-3">
             <Link
               href="/upload"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white shadow-lg transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-amber-500 px-5 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/15 transition hover:brightness-110 dark:shadow-indigo-500/20"
             >
-              Publish extension
+              <span className="mr-2">🚀</span> Publish extension
             </Link>
             <a
               href="https://buymeacoffee.com/mhmdrameez"
