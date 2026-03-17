@@ -44,7 +44,7 @@ export default async function Home() {
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
               Developers publish ZIPs straight to GitHub Releases. Users download
-              directly — no extra backend, no approval queues.
+              directly.
             </p>
           </div>
 
@@ -75,12 +75,7 @@ export default async function Home() {
             </div>
           </div>
         ) : null}
-        <div className="mb-8 rounded-2xl border border-black/10 bg-white/80 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-950/70">
-          <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Packages are stored directly in GitHub under `packages/`, and the
-            marketplace index lives in `metadata/packages.json`.
-          </p>
-        </div>
+
 
         <MarketplaceList extensions={packages} />
       </main>
