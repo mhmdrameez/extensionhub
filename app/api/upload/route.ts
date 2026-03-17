@@ -17,19 +17,9 @@ type PackageMeta = {
 };
 
 const UploadSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1)
-    .max(60)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens"),
+  name: z.string().trim().min(1).max(60),
   description: z.string().trim().min(1).max(300),
-  version: z
-    .string()
-    .trim()
-    .min(1)
-    .max(30)
-    .regex(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/, "Use semver like 1.0.0"),
+  version: z.string().trim().min(1).max(30),
 });
 
 function getMaxZipBytes() {
