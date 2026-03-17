@@ -121,3 +121,20 @@ export async function ensurePackagesJson() {
   await putJson(path, [], "Initialize packages metadata");
 }
 
+export async function deleteFile(path: string, sha: string, message: string) {
+  const { owner, repo } = repoInfo();
+  const res = await ghFetch(
+    `${apiBase(owner, repo)}/contents/${path.split("/").map(encodeURIComponent).join("/")}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message,
+        sha,
+      }),
+    },
+  );
+  if (!res.ok) throw new Error(await res.text().catch(() => "GitHub delete failed"));
+  return res.json();
+}
+
