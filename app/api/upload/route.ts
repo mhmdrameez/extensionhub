@@ -156,7 +156,8 @@ export async function POST(req: Request) {
 
     await putJson(metaPath, updatedPackages, `Update metadata for ${name}@${version}`, sha);
 
-    const downloadUrl = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/${pkgPath}`;
+    const encodedPkgPath = pkgPath.split("/").map(encodeURIComponent).join("/");
+    const downloadUrl = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/${encodedPkgPath}`;
 
     return NextResponse.json({
       ok: true,

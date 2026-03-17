@@ -15,7 +15,8 @@ export default async function PackagePage({
 }: {
   params: Promise<{ name: string }>;
 }) {
-  const { name } = await params;
+  const { name: rawName } = await params;
+  const name = decodeURIComponent(rawName);
 
   await ensurePackagesJson();
   const { data: packages } = await getJson<PackageMeta[]>("metadata/packages.json", []);
@@ -29,6 +30,9 @@ export default async function PackagePage({
             <h1 className="text-2xl font-semibold tracking-tight">
               Package not found
             </h1>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
+              Tested: "{name}"
+            </p>
             <div className="mt-6">
               <Link href="/" className="underline underline-offset-4">
                 Back to marketplace
@@ -42,9 +46,9 @@ export default async function PackagePage({
 
   const owner = process.env.GITHUB_OWNER ?? "";
   const repo = process.env.GITHUB_REPO ?? "";
-  const downloadUrl = `https://raw.githubusercontent.com/${encodeURIComponent(
-    owner,
-  )}/${encodeURIComponent(repo)}/main/${zipPath(pkg.name, pkg.latest)}`;
+  
+  const encodedPath = zipPath(pkg.name, pkg.latest).split("/").map(encodeURIComponent).join("/");
+  const downloadUrl = `https://raw.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/main/${encodedPath}`;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-zinc-50 font-sans text-zinc-950 dark:bg-black dark:text-zinc-50">
@@ -106,7 +110,10 @@ export default async function PackagePage({
                       key={v}
                       href={`https://raw.githubusercontent.com/${encodeURIComponent(
                         owner,
-                      )}/${encodeURIComponent(repo)}/main/${zipPath(pkg.name, v)}`}
+                      )}/${encodeURIComponent(repo)}/main/${zipPath(pkg.name, v)
+                        .split("/")
+                        .map(encodeURIComponent)
+                        .join("/")}`}
                       className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs font-medium text-zinc-800 hover:bg-white dark:border-white/10 dark:bg-zinc-950/60 dark:text-zinc-200 dark:hover:bg-zinc-950"
                     >
                       {v}
