@@ -51,15 +51,17 @@ export default async function Home() {
           <div className="flex items-center gap-3">
             <Link
               href="/upload"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-amber-500 px-5 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/15 transition hover:brightness-110 dark:shadow-fuchsia-400/10"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white shadow-lg transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               Publish extension
             </Link>
             <a
-              href="https://github.com"
-              className="hidden h-11 items-center justify-center rounded-full border border-black/10 bg-white/70 px-5 text-sm font-medium text-zinc-800 backdrop-blur transition hover:bg-white dark:border-white/10 dark:bg-zinc-950/60 dark:text-zinc-200 dark:hover:bg-zinc-950 sm:inline-flex"
+              href="https://buymeacoffee.com/mhmdrameez"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white/70 px-5 text-sm font-semibold text-zinc-700 shadow-sm transition hover:bg-white/90 dark:border-white/10 dark:bg-zinc-950/60 dark:text-zinc-300 dark:hover:bg-zinc-950/80"
             >
-              Powered by GitHub
+              <span className="mr-2">☕</span> Buy me a coffee
             </a>
           </div>
         </div>
