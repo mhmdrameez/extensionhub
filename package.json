@@ -9,16 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.11.1",
-    "@prisma/client": "^7.5.0",
     "adm-zip": "^0.5.16",
     "jszip": "^3.10.1",
     "next": "16.1.7",
     "next-auth": "^4.24.13",
-    "pg": "^8.20.0",
-    "prisma": "^7.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "sonner": "^2.0.7",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -31,7 +28,5 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": ["prisma", "@prisma/engines"]
-  }
+  "pnpm": {}
 }

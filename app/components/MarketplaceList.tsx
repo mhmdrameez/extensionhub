@@ -1,8 +1,8 @@
 "use client";
 
-import type { ListedExtension } from "@/lib/extension-metadata";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import type { PackageMeta } from "@/lib/package-types";
 
 function normalize(s: string) {
   return s.toLowerCase().trim();
@@ -15,7 +15,15 @@ function initials(name: string) {
   return (a + (b ?? "")).toUpperCase();
 }
 
-function accentFor(id: number) {
+function hashToInt(input: string) {
+  let h = 0;
+  for (let i = 0; i < input.length; i++) {
+    h = (h * 31 + input.charCodeAt(i)) | 0;
+  }
+  return h;
+}
+
+function accentFor(id: string | number) {
   const themes = [
     { ring: "ring-indigo-500/25", bg: "from-indigo-500 to-fuchsia-500" },
     { ring: "ring-emerald-500/25", bg: "from-emerald-500 to-sky-500" },
@@ -23,32 +31,33 @@ function accentFor(id: number) {
     { ring: "ring-violet-500/25", bg: "from-violet-500 to-cyan-500" },
     { ring: "ring-fuchsia-500/25", bg: "from-fuchsia-500 to-amber-500" },
   ];
-  return themes[Math.abs(id) % themes.length]!;
+  const n = typeof id === "number" ? id : hashToInt(id);
+  return themes[Math.abs(n) % themes.length]!;
 }
 
 export function MarketplaceList({
-  extensions,
+  extensions: packages,
 }: {
-  extensions: ListedExtension[];
+  extensions: PackageMeta[];
 }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const q = normalize(query);
-    if (!q) return extensions;
+    if (!q) return packages;
 
-    return extensions.filter((ext) => {
+    return packages.filter((pkg) => {
       const haystack = normalize(
         [
-          ext.name,
-          ext.version,
-          ext.author,
-          ext.description ?? "",
+          pkg.name,
+          pkg.latest,
+          pkg.user,
+          pkg.description ?? "",
         ].join(" "),
       );
       return haystack.includes(q);
     });
-  }, [extensions, query]);
+  }, [packages, query]);
 
   return (
     <div>
@@ -88,14 +97,14 @@ export function MarketplaceList({
 
         <div className="text-sm text-zinc-600 dark:text-zinc-400">
           Showing <span className="font-medium">{filtered.length}</span> of{" "}
-          <span className="font-medium">{extensions.length}</span>
+          <span className="font-medium">{packages.length}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {extensions.length === 0 ? (
+        {packages.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-black/20 bg-white/80 p-8 text-center text-sm text-zinc-600 shadow-sm backdrop-blur dark:border-white/15 dark:bg-zinc-950/70 dark:text-zinc-400">
-            No extensions yet. Go to{" "}
+            No packages yet. Go to{" "}
             <Link href="/upload" className="underline underline-offset-4">
               /upload
             </Link>{" "}
@@ -106,11 +115,11 @@ export function MarketplaceList({
             No matches for <span className="font-medium">“{query}”</span>.
           </div>
         ) : (
-          filtered.map((ext) => {
-            const accent = accentFor(ext.id);
+          filtered.map((pkg) => {
+            const accent = accentFor(pkg.name);
             return (
               <article
-                key={ext.id}
+                key={pkg.name}
                 className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white/80 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-zinc-950/70"
               >
               <div
@@ -121,61 +130,47 @@ export function MarketplaceList({
                   <div className="flex items-start gap-4">
                     <div
                       className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br ${accent.bg} text-sm font-semibold text-white ring-4 ${accent.ring}`}
-                      title={ext.name}
+                      title={pkg.name}
                     >
-                      {initials(ext.name)}
+                      {initials(pkg.name)}
                     </div>
                     <div className="min-w-0">
                       <h2 className="truncate text-lg font-semibold">
-                        {ext.name}
+                        {pkg.name}
                       </h2>
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <span className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:border-white/10 dark:bg-zinc-950/60 dark:text-zinc-200">
-                          v{ext.version}
+                          latest {pkg.latest}
                         </span>
                         <span className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:border-white/10 dark:bg-zinc-950/60 dark:text-zinc-200">
-                          by {ext.author}
+                          by @{pkg.user}
                         </span>
-                        {ext.downloadUrl ? (
-                          <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                            ZIP ready
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center rounded-full bg-zinc-500/10 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                            No ZIP
-                          </span>
-                        )}
+                        <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                          {pkg.versions.length} version{pkg.versions.length === 1 ? "" : "s"}
+                        </span>
                       </div>
                     </div>
                   </div>
-                  {ext.description ? (
+                  {pkg.description ? (
                     <p className="mt-3 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
-                      {ext.description}
+                      {pkg.description}
                     </p>
                   ) : null}
                 </div>
 
                 <div className="flex shrink-0 items-center gap-3">
-                  {ext.downloadUrl ? (
-                    <a
-                      href={ext.downloadUrl}
-                      className="inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-amber-500 px-5 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/10 transition hover:brightness-110 dark:shadow-fuchsia-400/10"
-                    >
-                      Download ZIP
-                    </a>
-                  ) : (
-                    <span className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 px-5 text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
-                      No ZIP asset
-                    </span>
-                  )}
-                  {ext.releaseUrl ? (
-                    <a
-                      href={ext.releaseUrl}
-                      className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-white/60 px-5 text-sm font-medium text-zinc-900 backdrop-blur transition hover:bg-white dark:border-white/10 dark:bg-zinc-950/50 dark:text-zinc-100 dark:hover:bg-zinc-950"
-                    >
-                      View release
-                    </a>
-                  ) : null}
+                  <Link
+                    href={`/packages/${encodeURIComponent(pkg.name)}`}
+                    className="hidden h-10 items-center justify-center rounded-full border border-black/10 bg-white/60 px-5 text-sm font-medium text-zinc-900 backdrop-blur transition hover:bg-white dark:border-white/10 dark:bg-zinc-950/50 dark:text-zinc-100 dark:hover:bg-zinc-950 sm:inline-flex"
+                  >
+                    Details
+                  </Link>
+                  <Link
+                    href={`/packages/${encodeURIComponent(pkg.name)}`}
+                    className="inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-amber-500 px-5 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/10 transition hover:brightness-110 dark:shadow-fuchsia-400/10"
+                  >
+                    View & download
+                  </Link>
                 </div>
               </div>
               </article>

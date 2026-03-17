@@ -7,13 +7,15 @@ export type ExtensionMetaV1 = {
 };
 
 export type ListedExtension = {
-  id: number;
+  id: string | number;
   name: string;
   version: string;
   author: string;
   description?: string;
   downloadUrl: string | null;
   releaseUrl: string | null;
+  highPermission?: boolean;
+  permissions?: string[];
 };
 
 export function toReleaseBody(meta: ExtensionMetaV1) {

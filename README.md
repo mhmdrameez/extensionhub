@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ExtensionHub (GitHub package marketplace)
 
-## Getting Started
+ExtensionHub is a lightweight npm-like marketplace built with **Next.js App Router** where packages are stored in a GitHub repository:
 
-First, run the development server:
+- Package ZIPs are written to `packages/{packageName}/{version}.zip`
+- The marketplace index is stored in `metadata/packages.json`
+
+## Features
+
+- **Auth**: GitHub OAuth only via NextAuth (no email/password)
+- **Storage/DB**: GitHub REST API (server-side token only)
+- **Versioning**: multiple versions per package; latest tracked in metadata
+- **Anti-spam**: upload limit per user per day
+- **Validation**: `.zip` only with size limit
+
+## Local setup
+
+### 1) Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2) Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env` (copy from `.env.example`) and fill in:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `NEXTAUTH_URL`, `NEXTAUTH_SECRET`
+- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
+- `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
+- `MAX_ZIP_BYTES`, `MAX_UPLOADS_PER_DAY`
 
-## Learn More
+### 3) Run dev server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Pages
 
-## Deploy on Vercel
+- **Marketplace**: `/` (all packages)
+- **Upload**: `/upload` (requires login)
+- **Package**: `/packages/[name]`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment (Vercel)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Add all environment variables from `.env.example` in Vercel Project Settings.
+2. Ensure `GITHUB_TOKEN` has permission to write to the storage repo.
+3. Deploy.
+

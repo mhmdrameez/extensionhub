@@ -1,9 +1,21 @@
 import Link from "next/link";
-import { listExtensions } from "@/lib/github";
 import { MarketplaceList } from "@/app/components/MarketplaceList";
+import { ensurePackagesJson, getJson } from "@/lib/github-storage";
+import type { PackageMeta } from "@/lib/package-types";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const extensions = await listExtensions();
+  let packages: PackageMeta[] = [];
+  let loadError: string | null = null;
+  try {
+    await ensurePackagesJson();
+    const { data } = await getJson<PackageMeta[]>("metadata/packages.json", []);
+    packages = data;
+  } catch (e) {
+    loadError = e instanceof Error ? e.message : "Failed to load packages";
+    packages = [];
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-zinc-50 font-sans text-zinc-950 dark:bg-black dark:text-zinc-50">
@@ -54,15 +66,23 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-5xl px-6 pb-16">
+        {loadError ? (
+          <div className="mb-6 rounded-2xl border border-amber-500/25 bg-amber-500/10 p-6 text-sm text-amber-900 shadow-sm backdrop-blur dark:text-amber-200">
+            <div className="font-semibold">GitHub storage not connected</div>
+            <div className="mt-1 text-amber-900/80 dark:text-amber-200/80">
+              Check `GITHUB_TOKEN`, `GITHUB_OWNER`, and `GITHUB_REPO`. Error:{" "}
+              {loadError}
+            </div>
+          </div>
+        ) : null}
         <div className="mb-8 rounded-2xl border border-black/10 bg-white/80 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-950/70">
           <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Extensions are stored on GitHub Releases. This site lists public
-            releases from your configured repo and links directly to the ZIP
-            asset for download.
+            Packages are stored directly in GitHub under `packages/`, and the
+            marketplace index lives in `metadata/packages.json`.
           </p>
         </div>
 
-        <MarketplaceList extensions={extensions} />
+        <MarketplaceList extensions={packages} />
       </main>
     </div>
   );
