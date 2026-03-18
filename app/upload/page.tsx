@@ -84,7 +84,17 @@ export default function UploadPage() {
     const zip = new JSZip();
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
-      const path = file.webkitRelativePath || file.name;
+      let path = file.webkitRelativePath || file.name;
+      
+      // If it's from a webkitdirectory selection, it usually looks like "FolderName/file.ext"
+      // We want to strip the first part to put files at the root of the ZIP
+      if (file.webkitRelativePath && file.webkitRelativePath.includes("/")) {
+        const parts = file.webkitRelativePath.split("/");
+        if (parts.length > 1) {
+          path = parts.slice(1).join("/");
+        }
+      }
+      
       zip.file(path, file);
     }
     return await zip.generateAsync({ type: "blob" });
