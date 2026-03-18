@@ -43,7 +43,7 @@ export default async function Home() {
               .
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-              Developer upload extension folder, system make it zip automatically, users can download directly and use.
+              Upload extension folder, system makes it ZIP, users download and use.
             </p>
           </div>
 
