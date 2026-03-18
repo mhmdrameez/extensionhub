@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ExtensionHub | Open Browser Extension Marketplace",
   description:
-    "Discover, share, and install browser extensions instantly. An open marketplace powered by GitHub Releases - no extra backend, no approval queues.",
+    "Developer upload extension folder, system make it zip automatically, users can download directly and use.",
   keywords: ["browser extensions", "chrome extensions", "marketplace", "github", "open source", "extensionhub", "dev tools"],
   authors: [{ name: "ExtensionHub Team" }],
   openGraph: {
