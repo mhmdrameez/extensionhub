@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   authors: [{ name: "ExtensionHub Team" }],
   openGraph: {
     title: "ExtensionHub | Open Browser Extension Marketplace",
-    description: "Discover and share browser extensions instantly. Powered by GitHub Releases.",
+    description: "Developer upload extension folder, system make it zip automatically, users can download directly and use.",
     url: "https://extensionwebstore.vercel.app",
     siteName: "ExtensionHub",
     images: [
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ExtensionHub | Open Browser Extension Marketplace",
-    description: "Discover and share browser extensions instantly.",
+    description: "Developer upload extension folder, system make it zip automatically, users can download directly and use.",
     images: ["/og-image.png"],
   },
   manifest: "/manifest.json",
