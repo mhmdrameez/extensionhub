@@ -16,9 +16,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ExtensionHub",
+  title: "ExtensionHub | Open Browser Extension Marketplace",
   description:
-    "Open browser extension marketplace powered by Next.js + GitHub Releases.",
+    "Discover, share, and install browser extensions instantly. An open marketplace powered by GitHub Releases - no extra backend, no approval queues.",
+  keywords: ["browser extensions", "chrome extensions", "marketplace", "github", "open source", "extensionhub", "dev tools"],
+  authors: [{ name: "ExtensionHub Team" }],
+  openGraph: {
+    title: "ExtensionHub | Open Browser Extension Marketplace",
+    description: "Discover and share browser extensions instantly. Powered by GitHub Releases.",
+    url: "https://extensionwebstore.vercel.app",
+    siteName: "ExtensionHub",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ExtensionHub Preview",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ExtensionHub | Open Browser Extension Marketplace",
+    description: "Discover and share browser extensions instantly.",
+    images: ["/og-image.png"],
+  },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport = {
+  themeColor: "#4f46e5",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

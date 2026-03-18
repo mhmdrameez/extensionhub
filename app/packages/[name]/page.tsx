@@ -142,6 +142,32 @@ export default async function PackagePage({
           </aside>
         </div>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": pkg.name,
+            "description": pkg.description,
+            "applicationCategory": "BrowserExtension",
+            "operatingSystem": "Chrome, Firefox, Edge, Safari",
+            "author": {
+              "@type": "Person",
+              "name": pkg.user,
+            },
+            "downloadUrl": downloadUrl,
+            "softwareVersion": pkg.latest,
+            "releaseDate": pkg.createdAt,
+            "image": pkg.avatarUrl,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+            },
+          }),
+        }}
+      />
     </div>
   );
 }
