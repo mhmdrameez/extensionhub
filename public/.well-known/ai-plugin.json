@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_model": "ExtensionHub",
+  "name_for_human": "ExtensionHub Browser Extension Marketplace",
+  "description_for_model": "A marketplace for browser extensions. Developers upload extension folders, and the system automatically zips them for users to download. Powered by GitHub storage.",
+  "description_for_human": "Discover and share browser extensions instantly.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://extensionwebstore.vercel.app/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://extensionwebstore.vercel.app/icon.png",
+  "contact_email": "support@extensionhub.com",
+  "legal_info_url": "https://extensionwebstore.vercel.app/legal"
+}

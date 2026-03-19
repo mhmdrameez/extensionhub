@@ -80,6 +80,33 @@ export default async function Home() {
 
         <MarketplaceList extensions={packages} />
       </main>
+
+      {/* JSON-LD for Home Page */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "ExtensionHub",
+            "url": "https://extensionwebstore.vercel.app",
+            "description": "Discover and share browser extensions instantly. GitHub-powered marketplace for open-source browser extensions.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://extensionwebstore.vercel.app/packages?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "ExtensionHub",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://extensionwebstore.vercel.app/icon.png"
+              }
+            }
+          }),
+        }}
+      />
     </div>
   );
 }

@@ -3,11 +3,59 @@ import { ensurePackagesJson, getJson } from "@/lib/github-storage";
 import type { PackageMeta } from "@/lib/package-types";
 import { ChromeInstallButton } from "@/app/components/ChromeInstallButton";
 
+import { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 function zipPath(name: string, version: string) {
   return `packages/${name}/${version}.zip`;
+}
+
+function getDownloadUrl(pkg: PackageMeta) {
+  const owner = process.env.GITHUB_OWNER ?? "";
+  const repo = process.env.GITHUB_REPO ?? "";
+  const encodedPath = zipPath(pkg.name, pkg.latest).split("/").map(encodeURIComponent).join("/");
+  return `https://raw.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/main/${encodedPath}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ name: string }>;
+}): Promise<Metadata> {
+  const { name: rawName } = await params;
+  const name = decodeURIComponent(rawName);
+
+  await ensurePackagesJson();
+  const { data: packages } = await getJson<PackageMeta[]>("metadata/packages.json", []);
+  const pkg = packages.find((p) => p.name === name);
+
+  if (!pkg) {
+    return {
+      title: "Package Not Found | ExtensionHub",
+    };
+  }
+
+  return {
+    title: `${pkg.name} - Browser Extension | ExtensionHub`,
+    description: pkg.description || `Download ${pkg.name} browser extension. ${pkg.description}`,
+    openGraph: {
+      title: `${pkg.name} | ExtensionHub`,
+      description: pkg.description,
+      images: [pkg.avatarUrl],
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: `${pkg.name} | ExtensionHub`,
+      description: pkg.description,
+      images: [pkg.avatarUrl],
+    },
+    alternates: {
+      canonical: `https://extensionwebstore.vercel.app/packages/${encodeURIComponent(pkg.name)}`,
+    },
+  };
 }
 
 export default async function PackagePage({
@@ -44,11 +92,9 @@ export default async function PackagePage({
     );
   }
 
+  const downloadUrl = getDownloadUrl(pkg);
   const owner = process.env.GITHUB_OWNER ?? "";
   const repo = process.env.GITHUB_REPO ?? "";
-  
-  const encodedPath = zipPath(pkg.name, pkg.latest).split("/").map(encodeURIComponent).join("/");
-  const downloadUrl = `https://raw.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/main/${encodedPath}`;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-zinc-50 font-sans text-zinc-950 dark:bg-black dark:text-zinc-50">
@@ -152,18 +198,22 @@ export default async function PackagePage({
             "description": pkg.description,
             "applicationCategory": "BrowserExtension",
             "operatingSystem": "Chrome, Firefox, Edge, Safari",
+            "url": `https://extensionwebstore.vercel.app/packages/${encodeURIComponent(pkg.name)}`,
             "author": {
               "@type": "Person",
               "name": pkg.user,
+              "url": `https://github.com/${pkg.user}`
             },
             "downloadUrl": downloadUrl,
             "softwareVersion": pkg.latest,
             "releaseDate": pkg.createdAt,
+            "datePublished": pkg.createdAt,
             "image": pkg.avatarUrl,
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock"
             },
           }),
         }}
